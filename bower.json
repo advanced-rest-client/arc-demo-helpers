@@ -11,8 +11,8 @@
   ],
   "private": true,
   "main": [
-    "raml-demo-parser.html",
-    "arc-demo-snippet.html"
+    "arc-demo-snippet.html",
+    "raml-demo-parser.html"
   ],
   "repository": {
     "type": "git",
