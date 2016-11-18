@@ -21,6 +21,7 @@ the License.
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../raml-main-entry-lookup/raml-main-entry-lookup.html">
 <link rel="import" href="../iron-demo-helpers/demo-pages-shared-styles.html">
+<link rel="import" href="../raml-aware/raml-aware.html">
 <!--
 # `<raml-docs-parser>`
 The `<raml-docs-parser>` is an element that is intended to use in demo pages as a
@@ -37,7 +38,7 @@ be fired with the `raml` property on the detail object.
 @group UI Elements
 @element raml-summary-view
 -->
-<dom-module id="raml-docs-parser">
+<dom-module id="raml-demo-parser">
   <template>
     <style>
     .vertical-section-container {
@@ -72,6 +73,10 @@ be fired with the `raml` property on the detail object.
       @apply(--layout-flex);
     }
     </style>
+    <template is="dom-if" if="[[aware]]" restamp="true">
+      <raml-aware raml="[[raml]]" scope="[[aware]]"></raml-aware>
+    </template>
+
     <raml-js-parser></raml-js-parser>
     <raml-main-entry-lookup files="[[file]]" on-entry="entryFound"></raml-main-entry-lookup>
     <div class="vertical-section-container centered">
@@ -102,7 +107,7 @@ be fired with the `raml` property on the detail object.
   </template>
   <script>
   Polymer({
-    is: 'raml-docs-parser',
+    is: 'raml-demo-parser',
 
     properties: {
       // File object from file-drop element.
@@ -149,7 +154,15 @@ be fired with the `raml` property on the detail object.
         type: Object,
         notify: true,
         readOnly: true
-      }
+      },
+      // List of parser errors
+      errors: {
+        type: Array,
+        notify: true,
+        readOnly: true
+      },
+      // Name of the `<raml-aware>` scope, so it will fill the raml property.
+      aware: String
     },
 
     fileListChanged: function() {
@@ -243,14 +256,13 @@ be fired with the `raml` property on the detail object.
         rootNodeDetails: true,
         serializeMetadata: true
       });
-
-      this._setRaml(json);
+      this._setRaml(json.specification);
+      this._setErrors(json.errors);
       this.fire('raml-ready', {
         raml: json
       });
       this.working = false;
     }
-
   });
   </script>
 </dom-module>
