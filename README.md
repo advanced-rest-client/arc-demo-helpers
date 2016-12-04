@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/advanced-rest-client/arc-demo-helpers.svg?branch=master)](https://travis-ci.org/advanced-rest-client/arc-demo-helpers)  
+
 # arc-demo-snippet
 
 The `<arc-demo-snippet>` displays a parsed code of the code sample and renders the element
