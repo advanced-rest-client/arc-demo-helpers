@@ -28,6 +28,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <link rel="import" href="../../iron-ajax/iron-ajax.html">
     <link rel="import" href="../../iron-image/iron-image.html">
     <link rel="import" href="../arc-demo-snippet.html">
+    <link rel="import" href="../raml-demo-parser.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
       #container {
@@ -83,6 +84,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </template>
         </template>
       </arc-demo-snippet>
+
+      <h3>`raml-demo-parser`</h3>
+        <arc-demo-snippet>
+          <template>
+            <raml-demo-parser raml="{{raml}}"></raml-demo-parser>
+            <ul>
+            <template is="dom-repeat" items="[[raml.resources]]">
+              <li>[[item.relativeUri]] [[item.displayName]]</li>
+            </template>
+            </ul>
+          </template>
+        </template>
     </div>
 
   </body>

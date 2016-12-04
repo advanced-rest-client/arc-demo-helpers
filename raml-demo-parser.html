@@ -77,7 +77,7 @@ be fired with the `raml` property on the detail object.
       <raml-aware raml="[[raml]]" scope="[[aware]]"></raml-aware>
     </template>
 
-    <raml-js-parser></raml-js-parser>
+    <raml-js-parser normalize-raml></raml-js-parser>
     <raml-main-entry-lookup files="[[file]]" on-entry="entryFound"></raml-main-entry-lookup>
     <div class="vertical-section-container centered">
       <h1>Drop RAML file here.</h1>
@@ -236,32 +236,19 @@ be fired with the `raml` property on the detail object.
       }
 
       event.detail.raml
-      .then((api) => {
-        this.api = api;
-        this.produceJSON();
-        this.errors = api.errors();
+      .then((result) => {
+        this.api = result[0];
+        this._setRaml(result[1].specification);
+        this._setErrors(result[1].errors);
+        this.fire('raml-ready', {
+          raml: result[1].specification
+        });
+        this.working = false;
       })
       .catch((e) => {
         console.warn('API error', e);
         this.working = false;
       });
-    },
-
-    produceJSON: function() {
-      if (!this.api) {
-        return;
-      }
-      var json = this.api.expand(true).toJSON({
-        dumpSchemaContents: true,
-        rootNodeDetails: true,
-        serializeMetadata: true
-      });
-      this._setRaml(json.specification);
-      this._setErrors(json.errors);
-      this.fire('raml-ready', {
-        raml: json
-      });
-      this.working = false;
     }
   });
   </script>
