@@ -207,16 +207,7 @@ be fired with the `raml` property on the detail object.
         return;
       }
 
-      event.detail.raml
-      .then((api) => {
-        this.api = api;
-        this.produceJSON();
-        this.errors = api.errors();
-      })
-      .catch((e) => {
-        console.warn('API error', e);
-        this.working = false;
-      });
+      this._handleRamlEvent(event);
     },
 
     _downloadRaml: function() {
@@ -235,6 +226,10 @@ be fired with the `raml` property on the detail object.
         return;
       }
 
+      this._handleRamlEvent(event);
+    },
+
+    _handleRamlEvent: function(event) {
       event.detail.raml
       .then((result) => {
         this.api = result[0];
