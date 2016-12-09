@@ -49,3 +49,30 @@ other elements.
 The `raml` property will contain a JSON output from the parser. Also `raml-ready` event will
 be fired with the `raml` property on the detail object.
 
+# raml-demo-page
+
+A full screen RAML elements demo.
+It has RAML parser, data processor and basic UI for displaying the demo page.
+
+## Usage
+The element accepts a `h1` as a page title placed in the header element and
+any element which has the `main` attribute.
+
+To extend the list of APIs (the dropdown) add a `paper-item` child node with
+the `data-url` attribute set to the URL of the RAML file. You can add as much
+children as you want.
+
+### Example
+```
+<raml-demo-page selected-object="{{selected}}" is-resource="{{isResource}}">
+  <h1>My demo page</h1>
+  <div main>
+    <my-element hidden$="[[!isResource]]" raml="[[selected]]"></my-element>
+  </div>
+  <paper-item data-url="https://raw.githubusercontent.com/api.raml">My API</paper-item>
+</raml-demo-page>
+```
+
+## Raml aware
+It uses the `raml-aware` element with scope set to `raml`.
+
