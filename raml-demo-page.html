@@ -142,7 +142,7 @@ It uses the `raml-aware` element with scope set to `raml`.
     </div>
 
     <div class="content">
-      <div drawer>
+      <div drawer hidden$="[[noSelector]]">
         <h2>[[raml.title]]</h2>
         <raml-path-selector raml="[[raml]]" selected-path="{{path}}"></raml-path-selector>
       </div>
@@ -225,7 +225,9 @@ It uses the `raml-aware` element with scope set to `raml`.
         type: Boolean,
         value: false,
         notify: true
-      }
+      },
+      // If set it will not display a path selector on the left hand side.
+      noSelector: Boolean
     },
 
     observers: ['_urlChanged(url)'],
