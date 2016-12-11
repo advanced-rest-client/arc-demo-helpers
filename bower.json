@@ -36,6 +36,10 @@
     "raml-aware": "advanced-rest-client/raml-aware#^1.0.2",
     "raml-path-selector": "advanced-rest-client/raml-path-selector#^1.0.3",
     "raml-path-to-object": "advanced-rest-client/raml-path-to-object#^1.0.31",
+    "paper-toast": "PolymerElements/paper-toast#^1.3.0",
+    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^1.4.3",
+    "paper-listbox": "polymerelements/paper-listbox#^1.1.2",
+    "paper-item": "PolymerElements/paper-item#^1.2.1",
     "paper-toast": "PolymerElements/paper-toast#^1.3.0"
   },
   "devDependencies": {
@@ -47,13 +51,9 @@
     "test-fixture": "PolymerElements/test-fixture#^1.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
     "iron-image": "PolymerElements/iron-image#^1.2.5",
-    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^1.4.3",
-    "paper-listbox": "polymerelements/paper-listbox#^1.1.2",
-    "paper-item": "PolymerElements/paper-item#^1.2.1",
     "iron-pages": "PolymerElements/iron-pages#^1.0.8",
     "iron-ajax": "PolymerElements/iron-ajax#^1.4.3",
-    "paper-tabs": "PolymerElements/paper-tabs#^1.7.0",
-    "paper-toast": "PolymerElements/paper-toast#^1.3.0"
+    "paper-tabs": "PolymerElements/paper-tabs#^1.7.0"
   },
   "ignore": [
     "**/.*",
