@@ -16,14 +16,20 @@ the License.
 <link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-item/paper-item-body.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../raml-aware/raml-aware.html">
 <link rel="import" href="../raml-js-parser/raml-js-parser.html">
 <link rel="import" href="../paper-spinner/paper-spinner.html">
+<link rel="import" href="../paper-styles/typography.html">
 <link rel="import" href="../raml-path-to-object/raml-path-to-object.html">
 <link rel="import" href="../raml-path-selector/raml-path-selector.html">
 <link rel="import" href="../paper-toast/paper-toast.html">
-
+<link rel="import" href="../paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-menu/paper-menu.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
 <!--
 A full screen RAML elements demo.
 It has RAML parser, data processor and basic UI for displaying the demo page.
@@ -85,9 +91,15 @@ It uses the `raml-aware` element with scope set to `raml`.
     .h1 ::content>h1 {
       padding: 0;
       margin: 0;
+      @apply(--paper-font-title);
     }
 
-     :host {
+    h2 {
+      @apply(--paper-font-subhead);
+      padding: 0px 8px;
+    }
+
+    :host {
       display: block;
     }
 
@@ -96,20 +108,36 @@ It uses the `raml-aware` element with scope set to `raml`.
       padding: 16px;
     }
 
+    :host([narrow]) .content {
+      @apply(--layout-vertical);
+    }
+
     .loader {
       padding: 16px;
+      @apply(--layout-vertical);
+      @apply(--layout-center-center);
+      @apply(--layout-fit);
+      background-color: #fff;
     }
 
     *[hidden] {
       display: none !important;
     }
 
-    div[drawer] {
+    .drawer {
       width: 256px;
     }
 
-    div[main] {
+    :host([narrow]) .drawer {
+      width: 100%;
+    }
+
+    .main {
       @apply(--layout-flex);
+    }
+
+    .checkable-menu paper-item-body {
+      margin-right: 8px;
     }
     </style>
     <header>
@@ -134,6 +162,12 @@ It uses the `raml-aware` element with scope set to `raml`.
           <content select="paper-item[data-url]"></content>
         </paper-listbox>
       </paper-dropdown-menu>
+      <paper-menu-button dynamic-align>
+        <paper-icon-button icon="menu" class="dropdown-trigger"></paper-icon-button>
+        <paper-menu class="dropdown-content">
+          <paper-item class="checkable-menu"><paper-item-body>Narrow layout</paper-item-body><paper-checkbox checked="{{narrow}}"></paper-checkbox></paper-item>
+        </paper-menu>
+      </paper-menu-button>
     </header>
 
     <div class="loader" hidden$="[[!working]]">
@@ -142,11 +176,11 @@ It uses the `raml-aware` element with scope set to `raml`.
     </div>
 
     <div class="content">
-      <div drawer hidden$="[[noSelector]]">
+      <div class="drawer" hidden$="[[noSelector]]">
         <h2>[[raml.title]]</h2>
-        <raml-path-selector raml="[[raml]]" selected-path="{{path}}"></raml-path-selector>
+        <raml-path-selector narrow="{{narrow}}" raml="[[raml]]" selected-path="{{path}}"></raml-path-selector>
       </div>
-      <div main>
+      <div class=".main">
         <content select="[main]"></content>
       </div>
     </div>
@@ -227,7 +261,13 @@ It uses the `raml-aware` element with scope set to `raml`.
         notify: true
       },
       // If set it will not display a path selector on the left hand side.
-      noSelector: Boolean
+      noSelector: Boolean,
+      // If set then it renders "mobile" view.
+      narrow: {
+        type: Boolean,
+        notify: true,
+        reflectToAttribute: true
+      }
     },
 
     observers: ['_urlChanged(url)'],
