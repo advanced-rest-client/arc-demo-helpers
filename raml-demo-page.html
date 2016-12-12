@@ -118,6 +118,8 @@ It uses the `raml-aware` element with scope set to `raml`.
       @apply(--layout-center-center);
       @apply(--layout-fit);
       background-color: #fff;
+      z-index: 2;
+      margin-top: 86px;
     }
 
     *[hidden] {
@@ -180,7 +182,7 @@ It uses the `raml-aware` element with scope set to `raml`.
         <h2>[[raml.title]]</h2>
         <raml-path-selector narrow="{{narrow}}" raml="[[raml]]" selected-path="{{path}}"></raml-path-selector>
       </div>
-      <div class=".main">
+      <div class="main">
         <content select="[main]"></content>
       </div>
     </div>
