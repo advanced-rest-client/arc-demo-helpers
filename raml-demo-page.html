@@ -189,7 +189,7 @@ It uses the `raml-aware` element with scope set to `raml`.
 
     <raml-aware raml="[[raml]]" scope="raml"></raml-aware>
     <raml-js-parser normalize-raml></raml-js-parser>
-    <raml-path-to-object raml="[[raml]]" selected-parent="{{parentEndpoint}}" selected-path="[[path]]" selected-object="{{selectedObject}}" is-method="{{isMethod}}" is-resource="{{isResource}}" is-documentation="{{isDocumentation}}"></raml-path-to-object>
+    <raml-path-to-object raml="[[raml]]" selected-parent="{{parentEndpoint}}" selected-path="[[path]]" selected-object="{{selectedObject}}" is-method="{{isMethod}}" is-resource="{{isResource}}" is-documentation="{{isDocumentation}}" is-type="{{isType}}" is-summary="{{isSummary}}"></raml-path-to-object>
     <paper-toast text=""></paper-toast>
   </template>
   <script>
@@ -258,6 +258,19 @@ It uses the `raml-aware` element with scope set to `raml`.
       },
       // True if the `selectedObject` is a documentation.
       isDocumentation: {
+        type: Boolean,
+        value: false,
+        notify: true
+      },
+      // True if the `selectedObject` is a type.
+      isType: {
+        type: Boolean,
+        value: false,
+        notify: true
+      },
+      // True if the `selectedObject` is a summary. `selectedObject` then
+      // equals to `raml` (it's the same object).
+      isSummary: {
         type: Boolean,
         value: false,
         notify: true
