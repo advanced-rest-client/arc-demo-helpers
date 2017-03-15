@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/advanced-rest-client/arc-demo-helpers.svg?branch=master)](https://travis-ci.org/advanced-rest-client/arc-demo-helpers)  
+[![Build Status](https://travis-ci.org/advanced-rest-client/arc-demo-helpers.svg?branch=stage)](https://travis-ci.org/advanced-rest-client/arc-demo-helpers)  
 
 # arc-demo-snippet
 

@@ -1,3 +1,13 @@
+<a name="1.0.11"></a>
+## [1.0.11](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.10...v1.0.11) (2017-03-15)
+
+
+### Update
+
+* Added properties to support types and summary nodes from the navigation ([faacdb6598aa5f59dec3dd515f6373dbbd3eae8d](https://github.com/advanced-rest-client/arc-demo-helpers/commit/faacdb6598aa5f59dec3dd515f6373dbbd3eae8d))
+
+
+
 <a name="1.0.10"></a>
 ## [1.0.10](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.9...v1.0.10) (2016-12-12)
 
