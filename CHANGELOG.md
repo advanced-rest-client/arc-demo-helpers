@@ -1,3 +1,14 @@
+<a name="1.0.12"></a>
+## [1.0.12](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.11...v1.0.12) (2017-03-31)
+
+
+### Update
+
+* Removed sauce connect from travis config ([153e5f96f431448d8317438eadb2e8f23e2d88d9](https://github.com/advanced-rest-client/arc-demo-helpers/commit/153e5f96f431448d8317438eadb2e8f23e2d88d9))
+* Updated element to work with the new RAML JS parser ([8261c7a525b02c8f6c1f317951b544b95dbf692f](https://github.com/advanced-rest-client/arc-demo-helpers/commit/8261c7a525b02c8f6c1f317951b544b95dbf692f))
+
+
+
 <a name="1.0.11"></a>
 ## [1.0.11](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.10...v1.0.11) (2017-03-15)
 

@@ -77,7 +77,9 @@ be fired with the `raml` property on the detail object.
       <raml-aware raml="[[raml]]" scope="[[aware]]"></raml-aware>
     </template>
 
-    <raml-js-parser normalize-raml></raml-js-parser>
+    <raml-js-parser json latest-json="{{plainRaml}}"></raml-js-parser>
+    <raml-json-enhance json="[[plainRaml.specification]]" result="{{raml}}"></raml-json-enhance>
+
     <raml-main-entry-lookup files="[[file]]" on-entry="entryFound"></raml-main-entry-lookup>
     <div class="vertical-section-container centered">
       <h1>Drop RAML file here.</h1>
@@ -139,11 +141,6 @@ be fired with the `raml` property on the detail object.
       },
       // Reference to the API object produced by the parser
       api: Object,
-      // List of errors found by parser.
-      errors: {
-        type: Array,
-        value: []
-      },
       // The URL of the RAML file to download.
       ramlFileUrl: {
         type: String,
@@ -197,11 +194,11 @@ be fired with the `raml` property on the detail object.
     parseRaml: function(item) {
       this.working = true;
 
-      let detail = {
+      var detail = {
         'file': item.entry,
         'files': this.file
       };
-      let event = this.fire('parse-raml-file', detail);
+      var event = this.fire('parse-raml-file', detail);
       if (!event.detail.raml) {
         console.error('Event did not contained raml property.');
         return;
@@ -216,11 +213,10 @@ be fired with the `raml` property on the detail object.
         return;
       }
       this.working = true;
-
-      let detail = {
+      var detail = {
         'url': url
       };
-      let event = this.fire('parse-raml-url', detail);
+      var event = this.fire('parse-raml-url', detail);
       if (!event.detail.raml) {
         console.error('Event did not contained raml property.');
         return;
@@ -230,19 +226,20 @@ be fired with the `raml` property on the detail object.
     },
 
     _handleRamlEvent: function(event) {
+      var context = this;
       event.detail.raml
-      .then((result) => {
-        this.api = result[0];
-        this._setRaml(result[1].specification);
-        this._setErrors(result[1].errors);
-        this.fire('raml-ready', {
-          raml: result[1].specification
+      .then(function(data) {
+        context.api = data.result;
+        context._setRaml(data.json.specification);
+        context._setErrors(data.json.errors);
+        context.fire('raml-ready', {
+          raml: data.json.specification
         });
-        this.working = false;
+        context.working = false;
       })
-      .catch((e) => {
+      .catch(function(e) {
         console.warn('API error', e);
-        this.working = false;
+        context.working = false;
       });
     }
   });
