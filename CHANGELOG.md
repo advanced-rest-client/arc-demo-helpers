@@ -1,3 +1,13 @@
+<a name="1.0.13"></a>
+## [1.0.13](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.12...v1.0.13) (2017-06-05)
+
+
+### New
+
+* Added option to import local file ([24fc603336e3cdde934849cf0ef0bbeac04552da](https://github.com/advanced-rest-client/arc-demo-helpers/commit/24fc603336e3cdde934849cf0ef0bbeac04552da))
+
+
+
 <a name="1.0.12"></a>
 ## [1.0.12](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.11...v1.0.12) (2017-03-31)
 
