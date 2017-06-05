@@ -1,0 +1,185 @@
+<!--
+@license
+Copyright 2016 The Advanced REST client authors <arc@mulesoft.com>
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-styles/typography.html">
+<link rel="import" href="../arc-icons/arc-icons.html">
+<link rel="import" href="../iron-overlay-behavior/iron-overlay-behavior.html">
+<!--
+A drag and drop file import.
+
+
+@group UI Elements
+@element drop-file-importer
+-->
+<dom-module id="drop-file-importer">
+  <template>
+    <style>
+     :host {
+      display: block;
+      top: 24px;
+      bottom: 24px;
+      left: 24px;
+      right: 24px;
+      position: fixed;
+      background-color: #fff;
+      @apply(--layout-vertical);
+    }
+
+    .header {
+      height: 48px;
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+      background-color: rgb(61, 158, 255);
+    }
+
+    h1 {
+      @apply(--layout-flex);
+      @apply(--paper-font-headline);
+      padding: 0;
+      margin: 0;
+      color: #fff;
+      padding-left: 24px;
+    }
+
+    .close-button {
+      color: #fff;
+    }
+
+    .content {
+      border: 4px rgb(61, 158, 255) solid;
+      height: 100%;
+      @apply(--layout-flex);
+      @apply(--layout-vertical);
+    }
+
+    .dragging {
+      @apply(--layout-vertical);
+      @apply(--layout-center-center);
+      @apply(--layout-flex);
+    }
+
+    .headline {
+      @apply(--paper-font-headline);
+    }
+    </style>
+    <div class="header">
+      <h1>
+        <iron-icon icon="arc:file-upload"></iron-icon>
+        Import file
+      </h1>
+      <paper-button class="close-button" on-tap="close">
+        <iron-icon icon="arc:close"></iron-icon>
+        close
+      </paper-button>
+    </div>
+    <div class="content">
+      <div class="dragging" hidden$="[[!dragging]]">
+        <p class="headline">Drop the file here</p>
+      </div>
+    </div>
+  </template>
+  <script>
+  Polymer({
+    is: 'drop-file-importer',
+
+    behaviors: [
+      Polymer.IronOverlayBehavior
+    ],
+    /**
+     * Fired when files has been dropped in the drop area.
+     *
+     * @event files-ready
+     * @param {Array} entries List of file entries.
+     */
+    properties: {
+      // True when file is dragged over the element.
+      dragging: {
+        type: Boolean,
+        value: true,
+        readOnly: true,
+        notify: true
+      },
+      // True when file read reads the file.
+      readingFile: {
+        type: Boolean,
+        value: false
+      },
+      // Files fropped to the drop area.
+      entries: {
+        type: Array,
+        notify: true,
+        readOnly: true
+      }
+    },
+
+    listeners: {
+      // 'dragenter': '_onDragEnter',
+      'dragleave': '_onDragLeave',
+      'dragover': '_onDragOver',
+      'drop': '_onDrop'
+    },
+
+    attached: function() {
+      this.listen(document.body, 'dragenter', '_documentDragEnter');
+    },
+
+    detached: function() {
+      this.unlisten(document.body, 'dragenter', '_documentDragEnter');
+    },
+
+    _documentDragEnter: function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      this.opened = true;
+      this._setDragging(true);
+    },
+
+    // // Handler for dragenter event.
+    // _onDragEnter: function(e) {
+    //   e.stopPropagation();
+    //   e.preventDefault();
+    //
+    // },
+
+    // Handler for dragenter event.
+    _onDragOver: function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+    },
+
+    _onDragLeave: function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+    },
+
+    // Handler for drop event.
+    _onDrop: function(e) {
+      this._setDragging(false);
+      e.stopPropagation();
+      e.preventDefault();
+      var files = e.dataTransfer.files;
+      this._processEntries(files);
+    },
+
+    _processEntries: function(entries) {
+      this.fire('files-ready', {
+        entries: entries
+      });
+      this._setEntries(entries);
+      this.opened = false;
+    }
+  });
+  </script>
+</dom-module>
