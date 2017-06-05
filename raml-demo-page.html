@@ -31,6 +31,9 @@ the License.
 <link rel="import" href="../paper-menu/paper-menu.html">
 <link rel="import" href="../paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../raml-json-enhance/raml-json-enhance.html">
+<link rel="import" href="../web-unzip/web-unzip.html">
+<link rel="import" href="../raml-main-entry-lookup/raml-main-entry-lookup.html">
+<link rel="import" href="drop-file-importer.html">
 <!--
 A full screen RAML elements demo.
 It has RAML parser, data processor and basic UI for displaying the demo page.
@@ -169,6 +172,7 @@ It uses the `raml-aware` element with scope set to `raml`.
         <paper-icon-button icon="menu" class="dropdown-trigger"></paper-icon-button>
         <paper-menu class="dropdown-content">
           <paper-item class="checkable-menu"><paper-item-body>Narrow layout</paper-item-body><paper-checkbox checked="{{narrow}}"></paper-checkbox></paper-item>
+          <content select="paper-item[main-menu]"></content>
         </paper-menu>
       </paper-menu-button>
     </header>
@@ -184,6 +188,19 @@ It uses the `raml-aware` element with scope set to `raml`.
         <raml-path-selector narrow="{{narrow}}" raml="[[raml]]" selected-path="{{path}}"></raml-path-selector>
       </div>
       <div class="main">
+        <section class="no-entry-point" hidden$="[[!noEntryPoint]]">
+          <h3>No entry point found</h3>
+          <p>The app scanned files and there were no candidates for entry point raml file. Please, try again.</p>
+        </section>
+        <section class="multiple-entry-points" hidden$="[[!multipleEntryPoints]]">
+          <h3>Multiple entry points found</h3>
+          <p>Please, select file that is the entry point to the API definition.</p>
+          <template is="dom-repeat" items="[[entryPoints]]" index-as="index">
+            <p>[[item.path]][[item.name]]
+              <paper-button raised on-tap="_useEntryPoint">use this</paper-button>
+            </p>
+          </template>
+        </section>
         <content select="[main]"></content>
       </div>
     </div>
@@ -191,10 +208,14 @@ It uses the `raml-aware` element with scope set to `raml`.
     <raml-aware raml="[[raml]]" scope="raml"></raml-aware>
 
     <raml-js-parser json latest-json="{{plainRaml}}"></raml-js-parser>
-    <raml-json-enhance json="[[plainRaml.specification]]" result="{{raml}}"></raml-json-enhance>
+    <raml-json-enhance json="[[plainRaml.specification]]" result="{{raml}}" on-error="_enhancerError"></raml-json-enhance>
+    <web-unzip id="unzip" on-web-unzip-read="fileUnzipped" auto-read flat-structure></web-unzip>
+    <raml-main-entry-lookup id="lookup" on-entry="entryFound"></raml-main-entry-lookup>
 
     <raml-path-to-object raml="[[raml]]" selected-parent="{{parentEndpoint}}" selected-path="[[path]]" selected-object="{{selectedObject}}" is-method="{{isMethod}}" is-resource="{{isResource}}" is-documentation="{{isDocumentation}}" is-type="{{isType}}" is-summary="{{isSummary}}"></raml-path-to-object>
     <paper-toast text=""></paper-toast>
+
+    <drop-file-importer on-files-ready="_filesDrop"></drop-file-importer>
   </template>
   <script>
   Polymer({
@@ -285,7 +306,23 @@ It uses the `raml-aware` element with scope set to `raml`.
         type: Boolean,
         notify: true,
         reflectToAttribute: true
-      }
+      },
+      // Will set to true when there's no entry point in the selected files.
+      noEntryPoint: {
+        type: Boolean,
+        value: false
+      },
+      // Will set to true when there's there are miltiple entry points in the selected files.
+      multipleEntryPoints: {
+        type: Boolean,
+        value: false
+      },
+      // List of detected entry points
+      entryPoints: {
+        type: Array,
+        value: []
+      },
+      plainRaml: Object
     },
 
     observers: ['_urlChanged(url)'],
@@ -340,12 +377,88 @@ It uses the `raml-aware` element with scope set to `raml`.
       return !!(_loaded && !!raml);
     },
     // Called when raml has been enhanced.
-    _enhanced: function() {
+    _enhanced: function(e) {
       this._setWorking(false);
     },
 
     _parsed: function(e) {
       this._setErrors(e.detail.json.errors);
+    },
+
+    _filesDrop: function(e) {
+      this.noEntryPoint = false;
+      this.multipleEntryPoints = false;
+      this.entryPoints = [];
+      this.raml = undefined;
+      this._setErrors(undefined);
+
+      var file = e.detail.entries;
+      if (file.length === 1 && file[0].type && file[0].type.indexOf('zip') !== -1) {
+        this.$.unzip.file = file;
+      } else {
+        this.$.lookup.files = file;
+      }
+    },
+
+    entryFound: function(e) {
+      var file = e.detail.entry;
+      if (!file) {
+        this.noEntryPoint = true;
+        return;
+      }
+      if (file instanceof Array) {
+        var exit = true;
+        // just try to find common file name
+        for (let i = 0, len = file.length; i < len; i += 1) {
+          if (file[i].name === 'api.raml') {
+            file = file[i];
+            exit = false;
+            break;
+          }
+        }
+        if (exit) {
+          this.multipleEntryPoints = true;
+          this.entryPoints = file;
+          return;
+        }
+      }
+      this.parseRaml(file);
+    },
+
+    _useEntryPoint: function(e) {
+      var item = e.model.get('item');
+      this.multipleEntryPoints = false;
+      this.entryPoints = [];
+      this.parseRaml(item);
+    },
+
+    parseRaml: function(item) {
+      this.plainRaml = undefined;
+      this.raml = undefined;
+
+      this._setWorking(true);
+      var detail = {
+        'file': item.entry || item
+      };
+      var event = this.fire('parse-raml-file', detail);
+      this._handleRamlParserEvent(event);
+    },
+
+    fileUnzipped: function(e) {
+      this.$$('raml-js-parser').files = e.detail.fileStructure;
+      this.$.lookup.files = e.detail.fileStructure;
+    },
+
+    _handleRamlParserEvent: function(event) {
+      if (!event.detail.raml) {
+        console.error('Event did not contained raml property.');
+        this._setWorking(false);
+        return;
+      }
+    },
+
+    _enhancerError: function(e) {
+      console.log('_enhancerError', e.detail);
     }
   });
   </script>
