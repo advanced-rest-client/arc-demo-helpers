@@ -15,6 +15,11 @@
   "unused": true,
   "newcap": false,
   "globals": {
-    "Polymer": true
+    "Polymer": true,
+    "Response": true,
+    "Request": true,
+    "Headers": true,
+    "Promise": true,
+    "PouchDB": true
   }
 }

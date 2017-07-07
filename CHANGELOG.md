@@ -1,3 +1,13 @@
+<a name="1.0.14"></a>
+## [1.0.14](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.13...v1.0.14) (2017-07-07)
+
+
+### New
+
+* Added test helpers for making a requests / responses tests ([8f8b3cc37485465356cd83164a81ab2e97a3e7b8](https://github.com/advanced-rest-client/arc-demo-helpers/commit/8f8b3cc37485465356cd83164a81ab2e97a3e7b8))
+
+
+
 <a name="1.0.13"></a>
 ## [1.0.13](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.12...v1.0.13) (2017-06-05)
 
