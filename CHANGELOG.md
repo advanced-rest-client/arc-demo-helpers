@@ -1,3 +1,9 @@
+<a name="1.0.15"></a>
+## [1.0.15](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.14...v1.0.15) (2017-07-07)
+
+
+
+
 <a name="1.0.14"></a>
 ## [1.0.14](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.13...v1.0.14) (2017-07-07)
 
