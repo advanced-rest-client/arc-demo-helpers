@@ -21,7 +21,9 @@ the License.
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../raml-main-entry-lookup/raml-main-entry-lookup.html">
 <link rel="import" href="../iron-demo-helpers/demo-pages-shared-styles.html">
+<link rel="import" href="../raml-json-enhance/raml-json-enhance.html">
 <link rel="import" href="../raml-aware/raml-aware.html">
+<link rel="import" href="../paper-toast/paper-toast.html">
 <!--
 # `<raml-docs-parser>`
 The `<raml-docs-parser>` is an element that is intended to use in demo pages as a
@@ -106,6 +108,7 @@ be fired with the `raml` property on the detail object.
         <paper-spinner active="[[working]]"></paper-spinner>
       </section>
     </div>
+    <paper-toast id="errorToast"></paper-toast>
   </template>
   <script>
   Polymer({
@@ -193,14 +196,16 @@ be fired with the `raml` property on the detail object.
 
     parseRaml: function(item) {
       this.working = true;
-
       var detail = {
-        'file': item.entry,
+        'file': item.entry || item,
         'files': this.file
       };
       var event = this.fire('parse-raml-file', detail);
       if (!event.detail.raml) {
         console.error('Event did not contained raml property.');
+        this.working = false;
+        this.$.errorToast.text = 'Parser not available';
+        this.$.errorToast.opened = true;
         return;
       }
 
@@ -221,7 +226,6 @@ be fired with the `raml` property on the detail object.
         console.error('Event did not contained raml property.');
         return;
       }
-
       this._handleRamlEvent(event);
     },
 
@@ -240,6 +244,12 @@ be fired with the `raml` property on the detail object.
       .catch(function(e) {
         console.warn('API error', e);
         context.working = false;
+        if (e.message && e.message.indexOf('Invalid first line.') === 0) {
+          context.$.errorToast.text = 'Not a RAML file';
+        } else {
+          context.$.errorToast.text = 'Parser error: ' + e.message;
+        }
+        context.$.errorToast.opened = true;
       });
     }
   });

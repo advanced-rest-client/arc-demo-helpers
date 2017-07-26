@@ -4,7 +4,7 @@
   "version": "1.0.15",
   "license": "Apache-2.0 OR CC-BY-4.0",
   "devDependencies": {
-    "polymer-cli": "^0.17.0"
+    "polymer-cli": "^1.2.0"
   },
   "engines": {
     "node": ">=0.10.0"
@@ -16,7 +16,7 @@
   "author": "The Advanced REST client authors <arc@mulesoft.com>",
   "scripts": {
     "serve": "node_modules/.bin/polymer serve",
-    "lint": "node_modules/.bin/polymer lint arc-demo-helpers.html",
+    "lint": "node_modules/.bin/polymer lint arc-demo-snippet.html raml-demo-parser.html raml-demo-page.html",
     "test": "exit 0",
     "deps": "npm install --quiet && bower install --quiet",
     "update-deps": "npm update --quiet && bower update --quiet"
