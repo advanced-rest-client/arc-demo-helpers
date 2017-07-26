@@ -35,13 +35,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <body unresolved>
     <template is="dom-bind">
       <raml-demo-page selected-object="{{selected}}" is-resource="{{isResource}}" is-method="{{isMethod}}" is-documentation="{{isDocumentation}}">
+        <paper-item data-url="https://anypoint.mulesoft.com/apiplatform/repository/v2/organizations/52560d3f-c37a-409d-9887-79e0a9a9ecff/public/apis/19695/versions/24854/files/root">FlightStats</paper-item>
         <h1>My demo page</h1>
         <div main>
           <p hidden$="[[!isResource]]">Hello, resource!</p>
           <p hidden$="[[!isDocumentation]]">Hello, documentation!</p>
           <p hidden$="[[!isMethod]]">Hello, method!</p>
         </div>
-        
+
       </raml-demo-page>
     </template>
   </body>
