@@ -1,3 +1,18 @@
+<a name="1.0.16"></a>
+## [1.0.16](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.15...1.0.16) (2017-07-26)
+
+
+### Fix
+
+* Fixed linter errors and updated to new file API. ([07d835983903079736d7bbb72e9082560f8ea57e](https://github.com/advanced-rest-client/arc-demo-helpers/commit/07d835983903079736d7bbb72e9082560f8ea57e))
+* Fixed linter errors. ([0d722ab9edd31ab7bfec29d195f5c6ee1d9687d9](https://github.com/advanced-rest-client/arc-demo-helpers/commit/0d722ab9edd31ab7bfec29d195f5c6ee1d9687d9))
+
+### Update
+
+* Updated lint command ([13cadcde582ad954575d955b1069c05f6b1ee973](https://github.com/advanced-rest-client/arc-demo-helpers/commit/13cadcde582ad954575d955b1069c05f6b1ee973))
+
+
+
 <a name="1.0.15"></a>
 ## [1.0.15](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.14...v1.0.15) (2017-07-07)
 
