@@ -30,6 +30,7 @@ the License.
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-menu/paper-menu.html">
 <link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../raml-json-enhance/raml-json-enhance.html">
 <link rel="import" href="../web-unzip/web-unzip.html">
 <link rel="import" href="../raml-main-entry-lookup/raml-main-entry-lookup.html">
@@ -152,6 +153,7 @@ It uses the `raml-aware` element with scope set to `raml`.
       </div>
       <paper-dropdown-menu label="RAML definition">
         <paper-listbox id="urlSelector" class="dropdown-content" selected="0" on-iron-select="_urlChangeHandler">
+          <content select="paper-item[data-url]"></content>
           <paper-item data-url="https://raw.githubusercontent.com/advanced-rest-client/raml-example-api/master/api.raml">ARC example</paper-item>
           <paper-item data-url="https://raw.githubusercontent.com/raml-org/raml-examples/master/others/world-music-api/api.raml">World Music API</paper-item>
           <paper-item data-url="https://raw.githubusercontent.com/raml-org/raml-examples/master/others/alainn-mobile-shopping/api.raml">Álainn Cosmetics Mobile Orders API</paper-item>
@@ -165,7 +167,6 @@ It uses the `raml-aware` element with scope set to `raml`.
           <paper-item data-url="https://anypoint.mulesoft.com/apiplatform/repository/v2/organizations/52560d3f-c37a-409d-9887-79e0a9a9ecff/public/apis/7195/versions/7257/files/root">Google Contacts API</paper-item>
           <paper-item data-url="https://anypoint.mulesoft.com/apiplatform/repository/v2/organizations/52560d3f-c37a-409d-9887-79e0a9a9ecff/public/apis/7782/versions/7918/files/root">GitHub API</paper-item>
           <paper-item data-url="https://anypoint.mulesoft.com/apiplatform/repository/v2/organizations/52560d3f-c37a-409d-9887-79e0a9a9ecff/public/apis/8111/versions/8305/files/root">SalesForce</paper-item>
-          <content select="paper-item[data-url]"></content>
         </paper-listbox>
       </paper-dropdown-menu>
       <paper-menu-button dynamic-align>
