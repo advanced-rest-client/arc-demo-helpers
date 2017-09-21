@@ -1,3 +1,14 @@
+<a name="1.0.18"></a>
+## [1.0.18](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.16...1.0.18) (2017-09-21)
+
+
+### New
+
+* Added data generator for requests and projects ([d7943fb3cfcd4aa3cbb33be1c66974c109b97dd2](https://github.com/advanced-rest-client/arc-demo-helpers/commit/d7943fb3cfcd4aa3cbb33be1c66974c109b97dd2))
+* Added data generator for the history items. ([63221090169bee88369ff579ee80be74112fc687](https://github.com/advanced-rest-client/arc-demo-helpers/commit/63221090169bee88369ff579ee80be74112fc687))
+
+
+
 <a name="1.0.17"></a>
 ## [1.0.17](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.16...1.0.17) (2017-07-26)
 
