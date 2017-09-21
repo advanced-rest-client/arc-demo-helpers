@@ -1,6 +1,18 @@
 /* global chance */
 var DataGenerator = {};
 
+var LAST_TIME = Date.now();
+
+// Sets a midnight on the timestamp
+DataGenerator.setMidninght = function(time) {
+  var now = new Date(time);
+  now.setMilliseconds(0);
+  now.setSeconds(0);
+  now.setMinutes(0);
+  now.setHours(0);
+  return now.getTime();
+};
+
 /**
  * Generates a random ARC legacy project object.
  *
@@ -51,19 +63,19 @@ DataGenerator.generateHeaders = function(contentType, opts) {
 /**
  * Generates a HTTP method name for the request.
  *
- * @param {Boolean} isPayload If true it will use `opts.payloadPools` or
+ * @param {Boolean} isPayload If true it will use `opts.methodsPools` or
  *                            `DataGenerator.payloadMethods` to pick a method
  *                            from. Otherwise it will use
  *                            `DataGenerator.nonPayloadMethods` to pick a method from.
  * @param {Object} opts Configuration options:
- * -   `payloadPools` (Array<String>) List of methods to randomly pick from.
+ * -   `methodsPools` (Array<String>) List of methods to randomly pick from.
  *      It only relevant for a requests that can carry a payload.
  * @return {String} Randomly picked HTTP method name.
  */
 DataGenerator.generateMethod = function(isPayload, opts) {
   opts = opts || {};
   if (isPayload) {
-    return chance.pick(opts.payloadPools || DataGenerator.payloadMethods);
+    return chance.pick(opts.methodsPools || DataGenerator.payloadMethods);
   }
   return chance.pick(DataGenerator.nonPayloadMethods);
 };
@@ -216,11 +228,12 @@ DataGenerator.generateDescription = function(opts) {
 };
 /**
  * Generates random saved request item.
- * @param {Object} opts Options to generate the reequest:
+ *
+ * @param {Object} opts Options to generate the request:
  * -   `noPayload` (Boolean) If set the request will not have payload
  * -   `forcePayload` (Boolean) The request will always have a payload.
  *      The `noPayload` property takes precedence over this setting.
- * -   `payloadPools` (Array<String>) List of methods to randomly pick one of
+ * -   `methodsPools` (Array<String>) List of methods to randomly pick one of
  * -   `noHeaders` (Boolean) will not generate headers string (will set empty
  *      string). If payload is generated then it will always contain a
  *      `content-type` header.
@@ -228,7 +241,7 @@ DataGenerator.generateDescription = function(opts) {
  * -   `noDescription` (Boolean) if set then it will never generate a desc.
  * -   `project` (String) A project ID to add. It also add other project related
  *      properties.
- * @return {[type]} [description]
+ * @return {Object} A request object
  */
 DataGenerator.generateSavedItem = function(opts) {
   opts = opts || {};
@@ -268,6 +281,45 @@ DataGenerator.generateSavedItem = function(opts) {
     item.legacyProject = opts.project;
     item.projectOrder = chance.integer({min: 0, max: 10});
   }
+  return item;
+};
+
+/**
+ * Generates a history object.
+ *
+ * @param {Object} opts Options to generate the request:
+ * -   `noPayload` (Boolean) If set the request will not have payload
+ * -   `forcePayload` (Boolean) The request will always have a payload.
+ *      The `noPayload` property takes precedence over this setting.
+ * -   `methodsPools` (Array<String>) List of methods to randomly pick one of
+ * -   `noHeaders` (Boolean) will not generate headers string (will set empty
+ *      string). If payload is generated then it will always contain a
+ *      `content-type` header.
+ * @return {Object} A request object
+ */
+DataGenerator.generateHistoryObject = function(opts) {
+  opts = opts || {};
+  LAST_TIME -= chance.integer({min: 1.8e+6, max: 8.64e+7});
+  var isPayload = DataGenerator.generateIsPayload(opts);
+  var method = DataGenerator.generateMethod(isPayload, opts);
+  var contentType = isPayload ? DataGenerator.generateContentType() : undefined;
+  var headers = DataGenerator.generateHeaders(contentType, opts);
+  var payload = DataGenerator.generatePayload(contentType);
+  var url = chance.url();
+  var item = {
+    url: url,
+    method: method,
+    headers: headers,
+    created: LAST_TIME,
+    updated: LAST_TIME
+  };
+  if (payload) {
+    item.payload = payload;
+  }
+
+  item._id = DataGenerator.setMidninght(LAST_TIME) + '/' +
+    encodeURIComponent(url) + '/' +
+    method.toLowerCase();
   return item;
 };
 /**
@@ -342,6 +394,23 @@ DataGenerator.generateSavedRequestData = function(opts) {
   };
 };
 /**
+ * Generates history requests list
+ *
+ * @param {Object} opts Configuration options:
+ * -   `requestsSize` (Number) Number of request to generate. Default to 25.
+ * Rest of configuration options are defined in `DataGenerator.generateHistoryObject`
+ * @return {Array} List of hisatory requests objects
+ */
+DataGenerator.generateHistoryRequestsData = function(opts) {
+  opts = opts || {};
+  var size = opts.requestsSize || 25;
+  var result = [];
+  for (var i = 0; i < size; i++) {
+    result.push(DataGenerator.generateHistoryObject(opts));
+  }
+  return result;
+};
+/**
  * Preforms `DataGenerator.insertSavedRequestData` if no requests data are in
  * the data store.
  * @param {Object} opts See `DataGenerator.generateSavedRequestData` for description.
@@ -375,6 +444,22 @@ DataGenerator.insertSavedIfNotExists = function(opts) {
   });
 };
 /**
+ * Preforms `DataGenerator.insertHistoryRequestData` if no requests data are in
+ * the data store.
+ * @param {Object} opts See `DataGenerator.insertHistoryRequestData` for description.
+ * @return {Promise} Resolved promise when data are inserted into the datastore.
+ */
+DataGenerator.insertHistoryIfNotExists = function(opts) {
+  opts = opts || {};
+  var db = new PouchDB('history-requests');
+  return db.allDocs()
+  .then(function(response) {
+    if (!response.rows.length) {
+      return DataGenerator.insertHistoryRequestData(opts);
+    }
+  });
+};
+/**
  * Generates saved requests data and inserts them into the data store if they
  * are missing.
  *
@@ -396,6 +481,22 @@ DataGenerator.insertSavedRequestData = function(opts) {
   });
 };
 /**
+ * Generates and saved history data to the data store.
+ *
+ * @param {Object} opts See `DataGenerator.generateHistoryRequestsData` for description.
+ * @return {Promise} Resolved promise when data are inserted into the datastore.
+ * Promise resolves to generated data object
+ */
+DataGenerator.insertHistoryRequestData = function(opts) {
+  opts = opts || {};
+  var data = DataGenerator.generateHistoryRequestsData(opts);
+  var db = new PouchDB('history-requests');
+  return db.bulkDocs(data)
+  .then(function() {
+    return data;
+  });
+};
+/**
  * Destroys saved and projects database.
  * @return {Promise} Resolved promise when the data are cleared.
  */
@@ -405,4 +506,12 @@ DataGenerator.destroySavedRequestData = function() {
   return savedDb.destroy().then(function() {
     return projectsDb.destroy();
   });
+};
+/**
+ * Destroys history database.
+ * @return {Promise} Resolved promise when the data are cleared.
+ */
+DataGenerator.destroyHistoryData = function() {
+  var db = new PouchDB('history-requests');
+  return db.destroy();
 };
