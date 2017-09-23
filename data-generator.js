@@ -2,6 +2,7 @@
 var DataGenerator = {};
 
 var LAST_TIME = Date.now();
+var stringPool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
 // Sets a midnight on the timestamp
 DataGenerator.setMidninght = function(time) {
@@ -20,7 +21,10 @@ DataGenerator.setMidninght = function(time) {
  */
 DataGenerator.createProjectObject = function() {
   var project = {
-    _id: chance.string({length: 12}),
+    _id: chance.string({
+      length: 12,
+      pool: stringPool
+    }),
     name: chance.sentence({words: 2}),
     order: 0,
     description: chance.paragraph()
@@ -210,7 +214,7 @@ DataGenerator.generateDriveId = function(opts) {
   }
   return chance.string({
     length: 32,
-    pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    pool: stringPool
   });
 };
 /**
@@ -274,8 +278,9 @@ DataGenerator.generateSavedItem = function(opts) {
     item.payload = payload;
   }
 
-  item._id = encodeURIComponent(requestName) +
-    '/' + encodeURIComponent(item.url) + '/' + item.method;
+  item._id = encodeURIComponent(requestName.toLowerCase()) + '/' +
+    encodeURIComponent(item.url.toLowerCase()) + '/' +
+    item.method.toLowerCase();
   if (opts.project) {
     item._id += '/' + opts.project;
     item.legacyProject = opts.project;
@@ -318,7 +323,7 @@ DataGenerator.generateHistoryObject = function(opts) {
   }
 
   item._id = DataGenerator.setMidninght(LAST_TIME) + '/' +
-    encodeURIComponent(url) + '/' +
+    encodeURIComponent(url.toLowerCase()) + '/' +
     method.toLowerCase();
   return item;
 };
