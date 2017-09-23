@@ -1,3 +1,13 @@
+<a name="1.0.19"></a>
+## [1.0.19](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.18...1.0.19) (2017-09-23)
+
+
+### Update
+
+* Updated data generator to produce proper IDs ([25939a40927f3e3eccc40ff474d4a533414ad227](https://github.com/advanced-rest-client/arc-demo-helpers/commit/25939a40927f3e3eccc40ff474d4a533414ad227))
+
+
+
 <a name="1.0.18"></a>
 ## [1.0.18](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.16...1.0.18) (2017-09-21)
 
