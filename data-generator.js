@@ -549,7 +549,7 @@ DataGenerator.destroyHeadersData = function() {
  * Destroys variables and anvironments database.
  * @return {Promise} Resolved promise when the data are cleared.
  */
-DataGenerator.destroyWariablesData = function() {
+DataGenerator.destroyVariablesData = function() {
   var db = new PouchDB('variables');
   var db2 = new PouchDB('variables-environments');
   return db.destroy().then(function() {
@@ -591,7 +591,7 @@ DataGenerator.destroyAll = function() {
     return DataGenerator.destroyHeadersData();
   })
   .then(function() {
-    return DataGenerator.destroyWariablesData();
+    return DataGenerator.destroyVariablesData();
   })
   .then(function() {
     return DataGenerator.destroyCookiesData();
