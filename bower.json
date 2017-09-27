@@ -71,7 +71,7 @@
     "test",
     "tasks"
   ],
-  "version": "1.0.20",
+  "version": "1.0.21",
   "resolutions": {
     "raml-json-enhance": "^0.2.2"
   }
