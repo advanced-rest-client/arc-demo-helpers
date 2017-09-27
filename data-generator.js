@@ -1,4 +1,5 @@
 /* global chance */
+// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 var DataGenerator = {};
 
 var LAST_TIME = Date.now();
@@ -519,4 +520,83 @@ DataGenerator.destroySavedRequestData = function() {
 DataGenerator.destroyHistoryData = function() {
   var db = new PouchDB('history-requests');
   return db.destroy();
+};
+/**
+ * Destroys websockets URL history database.
+ * @return {Promise} Resolved promise when the data are cleared.
+ */
+DataGenerator.destroyWebsocketsData = function() {
+  var db = new PouchDB('websocket-url-history');
+  return db.destroy();
+};
+/**
+ * Destroys URL history database.
+ * @return {Promise} Resolved promise when the data are cleared.
+ */
+DataGenerator.destroyUrlData = function() {
+  var db = new PouchDB('url-history');
+  return db.destroy();
+};
+/**
+ * Destroys headers sets database.
+ * @return {Promise} Resolved promise when the data are cleared.
+ */
+DataGenerator.destroyHeadersData = function() {
+  var db = new PouchDB('headers-sets');
+  return db.destroy();
+};
+/**
+ * Destroys variables and anvironments database.
+ * @return {Promise} Resolved promise when the data are cleared.
+ */
+DataGenerator.destroyWariablesData = function() {
+  var db = new PouchDB('variables');
+  var db2 = new PouchDB('variables-environments');
+  return db.destroy().then(function() {
+    return db2.destroy();
+  });
+};
+/**
+ * Destroys cookies database.
+ * @return {Promise} Resolved promise when the data are cleared.
+ */
+DataGenerator.destroyCookiesData = function() {
+  var db = new PouchDB('cookies');
+  return db.destroy();
+};
+/**
+ * Destroys auth data database.
+ * @return {Promise} Resolved promise when the data are cleared.
+ */
+DataGenerator.destroyAuthDataData = function() {
+  var db = new PouchDB('auth-data');
+  return db.destroy();
+};
+/**
+ * Destroys all databases.
+ * @return {Promise} Resolved promise when the data are cleared.
+ */
+DataGenerator.destroyAll = function() {
+  return DataGenerator.destroySavedRequestData()
+  .then(function() {
+    return DataGenerator.destroyHistoryData();
+  })
+  .then(function() {
+    return DataGenerator.destroyWebsocketsData();
+  })
+  .then(function() {
+    return DataGenerator.destroyUrlData();
+  })
+  .then(function() {
+    return DataGenerator.destroyHeadersData();
+  })
+  .then(function() {
+    return DataGenerator.destroyWariablesData();
+  })
+  .then(function() {
+    return DataGenerator.destroyCookiesData();
+  })
+  .then(function() {
+    return DataGenerator.destroyAuthDataData();
+  });
 };
