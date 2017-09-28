@@ -1,3 +1,13 @@
+<a name="1.0.23"></a>
+## [1.0.23](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.22...1.0.23) (2017-09-28)
+
+
+### New
+
+* Added more data generators. ([0e52118adb91d9ef7ce5d27d9ad20b35ecc6af57](https://github.com/advanced-rest-client/arc-demo-helpers/commit/0e52118adb91d9ef7ce5d27d9ad20b35ecc6af57))
+
+
+
 <a name="1.0.22"></a>
 ## [1.0.22](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.21...1.0.22) (2017-09-27)
 
