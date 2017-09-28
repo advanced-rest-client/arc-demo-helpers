@@ -96,7 +96,7 @@ DataGenerator.generateIsPayload = function(opts) {
   opts = opts || {};
   var isPayload = false;
   if (!opts.noPayload) {
-    if (opts.forcePayload && chance.bool()) {
+    if (opts.forcePayload || chance.bool()) {
       isPayload = true;
     }
   }
@@ -405,7 +405,7 @@ DataGenerator.generateSavedRequestData = function(opts) {
  * @param {Object} opts Configuration options:
  * -   `requestsSize` (Number) Number of request to generate. Default to 25.
  * Rest of configuration options are defined in `DataGenerator.generateHistoryObject`
- * @return {Array} List of hisatory requests objects
+ * @return {Array} List of history requests objects
  */
 DataGenerator.generateHistoryRequestsData = function(opts) {
   opts = opts || {};
@@ -413,6 +413,147 @@ DataGenerator.generateHistoryRequestsData = function(opts) {
   var result = [];
   for (var i = 0; i < size; i++) {
     result.push(DataGenerator.generateHistoryObject(opts));
+  }
+  return result;
+};
+
+/**
+ * Generates a random data for a variable object
+ * @return {Object} A variable object.
+ */
+DataGenerator.generateVariableObject = function() {
+  var isDefault = chance.bool();
+  var result = {
+    enabled: chance.bool({likelihood: 85}),
+    value: chance.sentence({words: 2}),
+    variable: chance.word(),
+    _id: chance.string()
+  };
+  if (isDefault) {
+    result.environment = 'default';
+  } else {
+    result.environment = chance.sentence({words: 2});
+  }
+  return result;
+};
+/**
+ * Generates variables list
+ *
+ * @param {Object} opts Configuration options:
+ * -   `size` (Number) Number of variables to generate. Default to 25.
+ * @return {Array} List of variables
+ */
+DataGenerator.generateVariablesData = function(opts) {
+  opts = opts || {};
+  var size = opts.size || 25;
+  var result = [];
+  for (var i = 0; i < size; i++) {
+    result.push(DataGenerator.generateVariableObject(opts));
+  }
+  return result;
+};
+/**
+ * Generate a header set datastore entry
+ *
+ * @param {Object} opts Generation options:
+ * -   `noHeaders` (Boolean) will not generate headers string (will set empty
+ *      string)
+ * -   `noPayload` (Boolean) If set the request will not have payload
+ * -   `forcePayload` (Boolean) The request will always have a payload.
+ *      THe `noPayload` property takes precedence over this setting.
+ * @return {[type]} [description]
+ */
+DataGenerator.generateHeaderSetObject = function(opts) {
+  var time = chance.hammertime();
+
+  var isPayload = DataGenerator.generateIsPayload(opts);
+  var contentType = isPayload ? DataGenerator.generateContentType() : undefined;
+  var headers = DataGenerator.generateHeaders(contentType, opts);
+
+  var result = {
+    created: time,
+    updated: time,
+    order: chance.integer({min: 0, max: 10}),
+    name: chance.sentence({words: 2}),
+    headers: headers,
+    _id: chance.string()
+  };
+  return result;
+};
+/**
+ * Generates headers sets list
+ *
+ * @param {Object} opts Configuration options:
+ * -   `size` (Number) Number of items to generate. Default to 25.
+ * @return {Array} List of datastore entries.
+ */
+DataGenerator.generateHeadersSetsData = function(opts) {
+  opts = opts || {};
+  var size = opts.size || 25;
+  var result = [];
+  for (var i = 0; i < size; i++) {
+    result.push(DataGenerator.generateHeaderSetObject(opts));
+  }
+  return result;
+};
+// Generates random Cookie data
+DataGenerator.generateCookieObject = function() {
+  var time = chance.hammertime();
+  var result = {
+    created: time,
+    updated: time,
+    expires: chance.hammertime(),
+    maxAge: chance.integer({min: 100, max: 1000}),
+    name: chance.word(),
+    value: chance.word(),
+    _id: chance.string(),
+    domain: chance.domain(),
+    hostOnly: chance.bool(),
+    httponly: chance.bool(),
+    lastAccess: time,
+    path: chance.bool() ? '/' : '/' + chance.word(),
+    persistent: chance.bool()
+  };
+  return result;
+};
+/**
+ * Generates cookies list
+ *
+ * @param {Object} opts Configuration options:
+ * -   `size` (Number) Number of items to generate. Default to 25.
+ * @return {Array} List of datastore entries.
+ */
+DataGenerator.generateCookiesData = function(opts) {
+  opts = opts || {};
+  var size = opts.size || 25;
+  var result = [];
+  for (var i = 0; i < size; i++) {
+    result.push(DataGenerator.generateCookieObject());
+  }
+  return result;
+};
+// Generates random URL data object
+DataGenerator.generateUrlObject = function() {
+  var result = {
+    time: chance.hammertime(),
+    cnt: chance.integer({min: 100, max: 1000}),
+    _id: chance.url()
+  };
+  return result;
+};
+/**
+ * Generates urls list
+ *
+ * @param {Object} opts Configuration options:
+ * -   `size` (Number) Number of items to generate. Default to 25.
+ * @return {Array} List of datastore entries.
+ */
+DataGenerator.generateUrlsData = function(opts) {
+  opts = opts || {};
+  var size = opts.size || 25;
+  var result = [];
+  for (var i = 0; i < size; i++) {
+    result.push(DataGenerator.generateUrlObject());
   }
   return result;
 };
@@ -487,7 +628,7 @@ DataGenerator.insertSavedRequestData = function(opts) {
   });
 };
 /**
- * Generates and saved history data to the data store.
+ * Generates and saves cookies data to the data store.
  *
  * @param {Object} opts See `DataGenerator.generateHistoryRequestsData` for description.
  * @return {Promise} Resolved promise when data are inserted into the datastore.
@@ -598,5 +739,108 @@ DataGenerator.destroyAll = function() {
   })
   .then(function() {
     return DataGenerator.destroyAuthDataData();
+  });
+};
+/**
+ * Deeply clones an object.
+ * @param {Array|Date|Object} obj Object to be cloned
+ * @return {Array|Date|Object} Copied object
+ */
+DataGenerator.clone = function(obj) {
+  var copy;
+  if (null === obj || 'object' !== typeof obj) {
+    return obj;
+  }
+  if (obj instanceof Date) {
+    copy = new Date();
+    copy.setTime(obj.getTime());
+    return copy;
+  }
+  if (obj instanceof Array) {
+    copy = [];
+    for (var i = 0, len = obj.length; i < len; i++) {
+      copy[i] = DataGenerator.clone(obj[i]);
+    }
+    return copy;
+  }
+  if (obj instanceof Object) {
+    copy = {};
+    for (var attr in obj) {
+      if (obj.hasOwnProperty(attr)) {
+        copy[attr] = DataGenerator.clone(obj[attr]);
+      }
+    }
+    return copy;
+  }
+  throw new Error('Unable to copy obj! Its type isn\'t supported.');
+};
+
+/**
+ * Reads all data from a data store.
+ * @param {String} name Name of the data store to read from. Without `_pouch_` prefix
+ * @return {Promise} Promise resolved to all read docs.
+ */
+DataGenerator.getDatastoreData = function(name) {
+  var db = new PouchDB(name);
+  return db.allDocs({
+    include_docs: true
+  })
+  .then(function(response) {
+    return response.rows.map(function(item) {
+      return item.doc;
+    });
+  });
+};
+// Returns a promise with all saved requests
+DataGenerator.getDatastoreRequestData = function() {
+  return DataGenerator.getDatastoreData('saved-requests');
+};
+// Returns a promise with all legacy projects
+DataGenerator.getDatastoreProjectsData = function() {
+  return DataGenerator.getDatastoreData('legacy-projects');
+};
+// Returns a promise with all history requests
+DataGenerator.getDatastoreHistoryData = function() {
+  return DataGenerator.getDatastoreData('history-requests');
+};
+// Returns a promise with all variables
+DataGenerator.getDatastoreVariablesData = function() {
+  return DataGenerator.getDatastoreData('variables');
+};
+// Returns a promise with all environments
+DataGenerator.getDatastoreEnvironmentsData = function() {
+  return DataGenerator.getDatastoreData('variables-environments');
+};
+// Returns a promise with all headers sets
+DataGenerator.getDatastoreheadersData = function() {
+  return DataGenerator.getDatastoreData('headers-sets');
+};
+// Returns a promise with all cookies
+DataGenerator.getDatastoreCookiesData = function() {
+  return DataGenerator.getDatastoreData('cookies');
+};
+// Returns a promise with all socket urls
+DataGenerator.getDatastoreWebsocketsData = function() {
+  return DataGenerator.getDatastoreData('websocket-url-history');
+};
+// Returns a promise with all url history
+DataGenerator.getDatastoreUrlsData = function() {
+  return DataGenerator.getDatastoreData('url-history');
+};
+// Returns a promise with all saved authorization data.
+DataGenerator.getDatastoreAthDataData = function() {
+  return DataGenerator.getDatastoreData('auth-data');
+};
+/**
+ * Updates an object in an data store.
+ *
+ * @param {String} dbName Name of the data store.
+ * @param {Object} obj The object to be stored.
+ * @return {Promise} A promise resolved to insert result.
+ */
+DataGenerator.updateObject = function(dbName, obj) {
+  var db = new PouchDB(name);
+  return db.put(obj, {
+    force: true
   });
 };
