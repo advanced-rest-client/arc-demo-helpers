@@ -1,3 +1,19 @@
+<a name="1.0.22"></a>
+## [1.0.22](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.21...1.0.22) (2017-09-27)
+
+
+
+
+<a name="1.0.21"></a>
+## [1.0.21](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.20...1.0.21) (2017-09-27)
+
+
+### New
+
+* Added database clear options. ([17d3cd339fa7af121eb49414c61ec2faa4523ca3](https://github.com/advanced-rest-client/arc-demo-helpers/commit/17d3cd339fa7af121eb49414c61ec2faa4523ca3))
+
+
+
 <a name="1.0.20"></a>
 ## [1.0.20](https://github.com/advanced-rest-client/arc-demo-helpers/compare/1.0.19...1.0.20) (2017-09-23)
 
