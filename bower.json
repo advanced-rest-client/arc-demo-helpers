@@ -44,7 +44,7 @@
     "paper-menu": "PolymerElements/paper-menu#^1.2.2",
     "paper-checkbox": "PolymerElements/paper-checkbox#^1.4.2",
     "arc-icons": "advanced-rest-client/arc-icons#^1.0.18",
-    "raml-json-enhance": "advanced-rest-client/raml-json-enhance#^0.2.2",
+    "raml-json-enhance": "advanced-rest-client/raml-json-enhance#^0.3.2",
     "web-unzip": "advanced-rest-client/web-unzip#^0.1.3",
     "iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#^1.10.4",
     "chance": "chancejs/chancejs#^1.0.4",
