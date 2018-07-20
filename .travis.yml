@@ -1,7 +1,7 @@
 language: node_js
 node_js: stable
 before_script:
-- npm install --silent bower polymer-cli
+- npm install --silent bower
 - bower install --silent
 script:
 - npm run lint
