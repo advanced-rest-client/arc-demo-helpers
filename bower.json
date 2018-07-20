@@ -10,11 +10,7 @@
     "polymer"
   ],
   "private": true,
-  "main": [
-    "arc-demo-snippet.html",
-    "raml-demo-parser.html",
-    "raml-demo-page.html"
-  ],
+  "main": "arc-demo-snippet.html",
   "repository": {
     "type": "git",
     "url": "git@github.com:advanced-rest-client/arc-demo-helpers.git"
